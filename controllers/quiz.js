@@ -153,3 +153,69 @@ exports.check = (req, res, next) => {
         answer
     });
 };
+
+exports.randomplay = (req, res, next) => {
+    if(req.session.resolved === undefined){
+        req.session.resolved = [];
+    };
+    const Op= Sequelize.Op;
+
+
+    const condicion = {"id":{[Op.notIn]:req.session.resolved}};
+
+    return models.quiz.count({where: condicion}).then(count => {
+
+        return models.quiz.findAll({
+        offset:Math.floor(Math.random()*count),
+        limit:1,
+        where: condicion
+
+    }).then(quizzes =>{
+        return quizzes[0];
+});
+
+})
+
+.catch(error => next(error));
+
+
+
+.then(quiz =>{
+        let score = req.session.resolved.length;
+    if(quiz ===undefined){
+        delete req.session.resolved;
+        res.render('quizzes/random_nomore', {score});
+
+    }else{
+        res.render('quizzes/random_play', {
+            quiz, score
+        });
+    }
+
+});
+};
+
+
+
+
+exports.randomcheck = (req, res, next) =>{
+
+    var score = req.session.resolved.length;
+    const answer = req.query.answer;
+
+    const resultado = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+    if(resultado){
+        if(req.session.resolved.indexOf(req.quiz.id)=== -1){
+            req.session.resolved.push(req.quiz.id);
+            score = req.session.resolved.length;
+        }
+    }else{
+        delete req.session.resolved;
+    }
+
+    res.render('quizzes/random_result', {
+        resultado,
+        score,
+        answer
+    });
+};
