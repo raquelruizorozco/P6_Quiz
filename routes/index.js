@@ -32,7 +32,7 @@ router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
 
 
 router.get('/quizzes/:randomplay',  quizController.randomplay);
-router.get('/quizzes/randomcheck/:quizId?answer=respuesta', quizController.randomcheck);
+router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomcheck);
 
 
 module.exports = router;
