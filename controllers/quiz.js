@@ -191,27 +191,25 @@ exports.randomplay = (req, res, next) => {
 
 
 exports.randomcheck = (req, res, next) =>{
-    if(req.session.resolved === undefined){
-        req.session.resolved = [];
+
+    if(req.session.randomPlay == undefined ) {
+        req.session.randomPlay = [];
     }
+    const player_answer =  req.query.answer || "";
+    const quiz_Answer = req.quiz.answer;
+    var score = req.session.randomPlay.length;
+    var result = player_answer.toLowerCase().trim() === quiz_Answer.toLowerCase().trim();
 
-    let score = req.session.resolved.length;
-    const answer = req.query.answer;
 
-    const resultado = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-
-    if(resultado){
-        if(req.session.resolved.indexOf(req.quiz.id)=== -1){
-            req.session.resolved.push(req.quiz.id);
-            score = req.session.resolved.length;
-        }
-    }else{
-        delete req.session.resolved;
+    if(result){
+        req.session.randomPlay.push(req.quiz.id) // Añade elementos al final del array.
+        score = req.session.randomPlay.length;
     }
 
     res.render('quizzes/random_result', {
-        resultado,
-        score,
-        answer
+        score: score,
+        answer: player_answer,
+        result: result
     });
+
 };
