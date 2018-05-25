@@ -6,22 +6,23 @@ const paginate = require('../helpers/paginate').paginate;
 
 // Autoload the quiz with id equals to :quizId
 exports.load = (req, res, next, quizId) => {
-
     models.quiz.findById(quizId, {
         include: [
-            models.tip,
+            {model: models.tip,
+                include: [{model: models.user, as: 'author'}]
+            },
             {model: models.user, as: 'author'}
         ]
     })
-    .then(quiz => {
-        if (quiz) {
-            req.quiz = quiz;
-            next();
-        } else {
-            throw new Error('There is no quiz with id=' + quizId);
-        }
-    })
-    .catch(error => next(error));
+        .then(quiz => {
+            if (quiz) {
+                req.quiz = quiz;
+                next();
+            } else {
+                throw new Error('There is no quiz with id=' + quizId);
+            }
+        })
+        .catch(error => next(error));
 };
 
 
