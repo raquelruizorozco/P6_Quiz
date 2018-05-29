@@ -118,12 +118,12 @@ router.delete('/quizzes/:quizId(\\d+)',
     quizController.adminOrAuthorRequired,
 	quizController.destroy);
 
-router.get('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/edit’,
+router.get('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/edit',
 sessionController.loginRequired,
     tipController.adminOrAuthorRequired,
     tipController.edit);
 
-router.put('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/update’,
+router.put('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/update',
 sessionController.loginRequired,
     tipController.adminOrAuthorRequired,
     tipController.update);
